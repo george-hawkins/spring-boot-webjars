@@ -3,16 +3,14 @@ package samples.websocket.client;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 public class SimpleClientWebSocketHandler extends TextWebSocketHandler {
-
-    protected Log logger = LogFactory.getLog(SimpleClientWebSocketHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(SimpleClientWebSocketHandler.class);
 
     private final GreetingService greetingService;
 
@@ -36,7 +34,7 @@ public class SimpleClientWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message)
             throws Exception {
-        this.logger.info("Received: " + message + " (" + this.latch.getCount() + ")");
+        this.logger.info("Received: {} ({})", message, this.latch.getCount());
         session.close();
         this.messagePayload.set(message.getPayload());
         this.latch.countDown();

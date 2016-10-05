@@ -2,7 +2,6 @@ package samples.websocket.echo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -13,8 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  * Echo messages by implementing a Spring {@link WebSocketHandler} abstraction.
  */
 public class EchoWebSocketHandler extends TextWebSocketHandler {
-
-    private static Logger logger = LoggerFactory.getLogger(EchoWebSocketHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(EchoWebSocketHandler.class);
 
     private final EchoService echoService;
 
@@ -24,7 +22,7 @@ public class EchoWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        logger.debug("Opened new session in instance " + this);
+        logger.debug("Opened new session in instance {}", this);
     }
 
     @Override

@@ -6,10 +6,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
@@ -33,9 +33,6 @@ import samples.websocket.client.SimpleGreetingService;
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 public class ApplicationTests {
-
-    private static Log logger = LogFactory.getLog(ApplicationTests.class);
-
     @LocalServerPort
     private int port = 1234;
 
@@ -72,6 +69,7 @@ public class ApplicationTests {
 
     @Configuration
     static class ClientConfiguration implements CommandLineRunner {
+        private final Logger logger = LoggerFactory.getLogger(ApplicationTests.class);
 
         @Value("${websocket.uri}")
         private String webSocketUri;
@@ -82,12 +80,12 @@ public class ApplicationTests {
 
         @Override
         public void run(String... args) throws Exception {
-            logger.info("Waiting for response: latch=" + this.latch.getCount());
+            logger.info("Waiting for response: latch={}", this.latch.getCount());
             if (this.latch.await(10, TimeUnit.SECONDS)) {
-                logger.info("Got response: " + this.messagePayload.get());
+                logger.info("Got response: {}", this.messagePayload.get());
             }
             else {
-                logger.info("Response not received: latch=" + this.latch.getCount());
+                logger.info("Response not received: latch={}", this.latch.getCount());
             }
         }
 
