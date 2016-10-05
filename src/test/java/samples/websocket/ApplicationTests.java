@@ -34,89 +34,89 @@ import samples.websocket.client.SimpleGreetingService;
 @DirtiesContext
 public class ApplicationTests {
 
-	private static Log logger = LogFactory.getLog(ApplicationTests.class);
+    private static Log logger = LogFactory.getLog(ApplicationTests.class);
 
-	@LocalServerPort
-	private int port = 1234;
+    @LocalServerPort
+    private int port = 1234;
 
-	@Test
-	public void echoEndpoint() throws Exception {
-		ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				ClientConfiguration.class, PropertyPlaceholderAutoConfiguration.class)
-						.properties("websocket.uri:ws://localhost:" + this.port
-								+ "/echo/websocket")
-						.run("--spring.main.web_environment=false");
-		long count = context.getBean(ClientConfiguration.class).latch.getCount();
-		AtomicReference<String> messagePayloadReference = context
-				.getBean(ClientConfiguration.class).messagePayload;
-		context.close();
-		assertThat(count).isEqualTo(0);
-		assertThat(messagePayloadReference.get())
-				.isEqualTo("Did you say \"Hello world!\"?");
-	}
+    @Test
+    public void echoEndpoint() throws Exception {
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(
+                ClientConfiguration.class, PropertyPlaceholderAutoConfiguration.class)
+                        .properties("websocket.uri:ws://localhost:" + this.port
+                                + "/echo/websocket")
+                        .run("--spring.main.web_environment=false");
+        long count = context.getBean(ClientConfiguration.class).latch.getCount();
+        AtomicReference<String> messagePayloadReference = context
+                .getBean(ClientConfiguration.class).messagePayload;
+        context.close();
+        assertThat(count).isEqualTo(0);
+        assertThat(messagePayloadReference.get())
+                .isEqualTo("Did you say \"Hello world!\"?");
+    }
 
-	@Test
-	public void reverseEndpoint() throws Exception {
-		ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				ClientConfiguration.class, PropertyPlaceholderAutoConfiguration.class)
-						.properties(
-								"websocket.uri:ws://localhost:" + this.port + "/reverse")
-						.run("--spring.main.web_environment=false");
-		long count = context.getBean(ClientConfiguration.class).latch.getCount();
-		AtomicReference<String> messagePayloadReference = context
-				.getBean(ClientConfiguration.class).messagePayload;
-		context.close();
-		assertThat(count).isEqualTo(0);
-		assertThat(messagePayloadReference.get()).isEqualTo("Reversed: !dlrow olleH");
-	}
+    @Test
+    public void reverseEndpoint() throws Exception {
+        ConfigurableApplicationContext context = new SpringApplicationBuilder(
+                ClientConfiguration.class, PropertyPlaceholderAutoConfiguration.class)
+                        .properties(
+                                "websocket.uri:ws://localhost:" + this.port + "/reverse")
+                        .run("--spring.main.web_environment=false");
+        long count = context.getBean(ClientConfiguration.class).latch.getCount();
+        AtomicReference<String> messagePayloadReference = context
+                .getBean(ClientConfiguration.class).messagePayload;
+        context.close();
+        assertThat(count).isEqualTo(0);
+        assertThat(messagePayloadReference.get()).isEqualTo("Reversed: !dlrow olleH");
+    }
 
-	@Configuration
-	static class ClientConfiguration implements CommandLineRunner {
+    @Configuration
+    static class ClientConfiguration implements CommandLineRunner {
 
-		@Value("${websocket.uri}")
-		private String webSocketUri;
+        @Value("${websocket.uri}")
+        private String webSocketUri;
 
-		private final CountDownLatch latch = new CountDownLatch(1);
+        private final CountDownLatch latch = new CountDownLatch(1);
 
-		private final AtomicReference<String> messagePayload = new AtomicReference<String>();
+        private final AtomicReference<String> messagePayload = new AtomicReference<String>();
 
-		@Override
-		public void run(String... args) throws Exception {
-			logger.info("Waiting for response: latch=" + this.latch.getCount());
-			if (this.latch.await(10, TimeUnit.SECONDS)) {
-				logger.info("Got response: " + this.messagePayload.get());
-			}
-			else {
-				logger.info("Response not received: latch=" + this.latch.getCount());
-			}
-		}
+        @Override
+        public void run(String... args) throws Exception {
+            logger.info("Waiting for response: latch=" + this.latch.getCount());
+            if (this.latch.await(10, TimeUnit.SECONDS)) {
+                logger.info("Got response: " + this.messagePayload.get());
+            }
+            else {
+                logger.info("Response not received: latch=" + this.latch.getCount());
+            }
+        }
 
-		@Bean
-		public WebSocketConnectionManager wsConnectionManager() {
+        @Bean
+        public WebSocketConnectionManager wsConnectionManager() {
 
-			WebSocketConnectionManager manager = new WebSocketConnectionManager(client(),
-					handler(), this.webSocketUri);
-			manager.setAutoStartup(true);
+            WebSocketConnectionManager manager = new WebSocketConnectionManager(client(),
+                    handler(), this.webSocketUri);
+            manager.setAutoStartup(true);
 
-			return manager;
-		}
+            return manager;
+        }
 
-		@Bean
-		public StandardWebSocketClient client() {
-			return new StandardWebSocketClient();
-		}
+        @Bean
+        public StandardWebSocketClient client() {
+            return new StandardWebSocketClient();
+        }
 
-		@Bean
-		public SimpleClientWebSocketHandler handler() {
-			return new SimpleClientWebSocketHandler(greetingService(), this.latch,
-					this.messagePayload);
-		}
+        @Bean
+        public SimpleClientWebSocketHandler handler() {
+            return new SimpleClientWebSocketHandler(greetingService(), this.latch,
+                    this.messagePayload);
+        }
 
-		@Bean
-		public GreetingService greetingService() {
-			return new SimpleGreetingService();
-		}
+        @Bean
+        public GreetingService greetingService() {
+            return new SimpleGreetingService();
+        }
 
-	}
+    }
 
 }

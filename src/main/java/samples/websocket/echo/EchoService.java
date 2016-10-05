@@ -2,6 +2,6 @@ package samples.websocket.echo;
 
 public interface EchoService {
 
-	String getMessage(String message);
+    String getMessage(String message);
 
 }

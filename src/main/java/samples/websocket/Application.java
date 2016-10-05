@@ -25,51 +25,51 @@ import samples.websocket.snake.SnakeWebSocketHandler;
 @EnableAutoConfiguration
 @EnableWebSocket
 public class Application extends SpringBootServletInitializer
-		implements WebSocketConfigurer {
+        implements WebSocketConfigurer {
 
-	@Override
-	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(echoWebSocketHandler(), "/echo").withSockJS();
-		registry.addHandler(snakeWebSocketHandler(), "/snake").withSockJS();
-	}
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(echoWebSocketHandler(), "/echo").withSockJS();
+        registry.addHandler(snakeWebSocketHandler(), "/snake").withSockJS();
+    }
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(Application.class);
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
 
-	@Bean
-	public EchoService echoService() {
-		return new DefaultEchoService("Did you say \"%s\"?");
-	}
+    @Bean
+    public EchoService echoService() {
+        return new DefaultEchoService("Did you say \"%s\"?");
+    }
 
-	@Bean
-	public GreetingService greetingService() {
-		return new SimpleGreetingService();
-	}
+    @Bean
+    public GreetingService greetingService() {
+        return new SimpleGreetingService();
+    }
 
-	@Bean
-	public WebSocketHandler echoWebSocketHandler() {
-		return new EchoWebSocketHandler(echoService());
-	}
+    @Bean
+    public WebSocketHandler echoWebSocketHandler() {
+        return new EchoWebSocketHandler(echoService());
+    }
 
-	@Bean
-	public WebSocketHandler snakeWebSocketHandler() {
-		return new PerConnectionWebSocketHandler(SnakeWebSocketHandler.class);
-	}
+    @Bean
+    public WebSocketHandler snakeWebSocketHandler() {
+        return new PerConnectionWebSocketHandler(SnakeWebSocketHandler.class);
+    }
 
-	@Bean
-	public ReverseWebSocketEndpoint reverseWebSocketEndpoint() {
-		return new ReverseWebSocketEndpoint();
-	}
+    @Bean
+    public ReverseWebSocketEndpoint reverseWebSocketEndpoint() {
+        return new ReverseWebSocketEndpoint();
+    }
 
-	@Bean
-	public ServerEndpointExporter serverEndpointExporter() {
-		return new ServerEndpointExporter();
-	}
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
 }
