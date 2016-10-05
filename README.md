@@ -4,6 +4,10 @@ The initially imported code for this project was taken unchanged from:
 
 ---
 
+Note that many browsers support WebSocket natively - however this project uses <https://github.com/sockjs/sockjs-client>
+
+---
+
 Switched to using webjars as per <http://www.webjars.org/documentation#springboot>
 
 See the section "Enhanced support for RequireJS" there - this looks like a nice way to avoid an endless sequence of `<script>` tags.
